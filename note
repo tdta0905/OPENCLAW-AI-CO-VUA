@@ -1,0 +1,56 @@
+# OpenClaw Chess Lab ♞
+
+Demo trò chơi cờ vua lấy cảm hứng từ kiến trúc agent/skills của [OpenClaw](https://github.com/tdta0905/openclaw): một giao diện chơi cờ nhỏ, luật cờ được thư viện `chess.js` xác thực, và một skill mô tả cách mở rộng agent thành trợ lý phân tích cờ.
+
+> **Phạm vi minh bạch:** Đây là demo độc lập chạy trên trình duyệt, chưa kết nối OpenClaw Gateway hoặc LLM. Đối thủ hiện tại là AI heuristic cục bộ, không phải engine cờ vua cấp chuyên nghiệp. Skill trong `openclaw/skills/chess-coach/SKILL.md` là khung tích hợp tiếp theo.
+
+## Chạy demo nhanh
+
+1. Giải nén thư mục.
+2. Mở `index.html` bằng Chrome, Edge hoặc Firefox khi có Internet.
+3. Chọn **Đấu với AI** hoặc **Hai người cùng máy**.
+4. Chọn quân rồi chọn ô đích. Nút **Gợi ý nước đi** đánh dấu một nước heuristic.
+
+Không cần cài Node.js/Python hay chạy server. `chess.js` được tải từ CDN, nên lần mở trang cần kết nối Internet. Nếu CDN không tải được, trang sẽ báo lỗi tải thư viện.
+
+## Tính năng
+
+- Bàn cờ responsive, quân cờ Unicode, tọa độ ô.
+- Xác thực nước đi theo luật cờ: nhập thành, bắt tốt qua đường, phong cấp, chiếu/chiếu hết và hòa do thư viện xử lý.
+- Chơi với AI heuristic hoặc chơi hai người trên cùng máy.
+- Lịch sử nước đi, hoàn tác, lật bàn cờ, gợi ý nước đi.
+- Skill mẫu cho OpenClaw để định nghĩa hành vi trợ lý cờ vua.
+
+## Cấu trúc
+
+```text
+openclaw-chess-demo/
+├── index.html
+├── README.md
+└── openclaw/
+    └── skills/
+        └── chess-coach/
+            └── SKILL.md
+```
+
+## Hướng tích hợp OpenClaw thật
+
+1. Cài đặt và cấu hình OpenClaw theo hướng dẫn chính thức: https://docs.openclaw.ai/.
+2. Đưa thư mục `openclaw/skills/chess-coach` vào vị trí skills/workspace được cấu hình trong OpenClaw.
+3. Khởi động lại/refresh agent theo phiên bản OpenClaw đang dùng và xác nhận skill được nhận diện.
+4. Để trợ lý phân tích **vị trí thật**, cần thêm một adapter an toàn để gửi FEN + lịch sử nước đi từ giao diện tới Gateway/tool, sau đó trả lời từ agent. Demo này chưa chứa adapter đó và không tự động gửi dữ liệu ra ngoài.
+
+### Lưu ý an toàn
+
+- Không dán token hoặc API key vào HTML/JavaScript phía trình duyệt.
+- Nếu thêm backend, lưu secrets trong biến môi trường và chỉ cho phép các thao tác cần thiết.
+- Kiểm tra tài liệu OpenClaw phiên bản đang cài trước khi bật quyền tools hoặc cho phép agent thao tác hệ thống.
+
+## Kiểm thử thủ công
+
+- Mở trang: bàn cờ đủ 64 ô, vị trí khai cuộc đúng.
+- Chọn tốt e2: các ô hợp lệ e3/e4 được đánh dấu; chọn e4 để đi.
+- Chọn **Ván mới**: bàn cờ trở về vị trí ban đầu.
+- Chọn **Hai người cùng máy**: cả Trắng và Đen có thể di chuyển bằng click.
+- Chọn **Đấu với AI**: sau nước Trắng, AI tự đi quân Đen.
+- Thử các nước bất hợp lệ: thư viện không cho phép đi sai luật.
